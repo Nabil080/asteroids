@@ -1,0 +1,244 @@
+[gd_scene load_steps=17 format=3 uid="uid://xhwicwt5wysb"]
+
+[ext_resource type="Script" uid="uid://cye6yiuvt4pc1" path="res://core/game.gd" id="1_5sg27"]
+[ext_resource type="PackedScene" uid="uid://d0t43tuuufwhi" path="res://entities/player/player.tscn" id="1_d3un6"]
+[ext_resource type="Script" uid="uid://cqy0ojhw0wnix" path="res://core/game_area.gd" id="2_8xnxh"]
+[ext_resource type="PackedScene" uid="uid://s0h4tlhdhsi7" path="res://entities/asteroid/asteroid.tscn" id="3_8xnxh"]
+[ext_resource type="Script" uid="uid://cxbwkca70opw6" path="res://core/asteroid_manager.gd" id="4_a04qp"]
+[ext_resource type="AudioStream" uid="uid://ysf157lvr57v" path="res://assets/sounds/spaceship-ambient-27988.mp3" id="6_cjuek"]
+[ext_resource type="Texture2D" uid="uid://c6e24thwhi1i0" path="res://assets/One_Sheet.png" id="6_vhpdd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5sg27"]
+size = Vector2(324, 186)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gjr3k"]
+atlas = ExtResource("6_vhpdd")
+region = Rect2(122, 224, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fgh25"]
+atlas = ExtResource("6_vhpdd")
+region = Rect2(139, 224, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gcgb4"]
+atlas = ExtResource("6_vhpdd")
+region = Rect2(122, 207, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4cdhi"]
+atlas = ExtResource("6_vhpdd")
+region = Rect2(139, 207, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vhpdd"]
+atlas = ExtResource("6_vhpdd")
+region = Rect2(122, 258, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bpu47"]
+atlas = ExtResource("6_vhpdd")
+region = Rect2(139, 258, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8bifg"]
+atlas = ExtResource("6_vhpdd")
+region = Rect2(122, 241, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r8boq"]
+atlas = ExtResource("6_vhpdd")
+region = Rect2(139, 241, 14, 14)
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_5sg27")
+
+[node name="GameArea" type="Area2D" parent="."]
+position = Vector2(160, 90)
+collision_layer = 0
+collision_mask = 255
+collision_priority = 10.0
+script = ExtResource("2_8xnxh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GameArea"]
+visible = false
+modulate = Color(0, 0, 0, 1)
+shape = SubResource("RectangleShape2D_5sg27")
+
+[node name="Player" parent="." instance=ExtResource("1_d3un6")]
+position = Vector2(162, 87)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(160, 90)
+scale = Vector2(1.4802042, 26.573444)
+
+[node name="BackgroundParticles" type="Node2D" parent="."]
+modulate = Color(0.45840502, 0.45840508, 0.45840502, 1)
+
+[node name="Back" type="CPUParticles2D" parent="BackgroundParticles"]
+position = Vector2(320, 90)
+amount = 300
+lifetime = 36.0
+preprocess = 36.0
+speed_scale = 0.5
+emission_shape = 3
+emission_rect_extents = Vector2(1, 90)
+direction = Vector2(-1, 0)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 10.0
+scale_amount_min = 0.5
+scale_amount_max = 0.5
+color = Color(0.99116415, 0.99116427, 0.99116415, 1)
+
+[node name="Middle" type="CPUParticles2D" parent="BackgroundParticles"]
+position = Vector2(320, 90)
+amount = 200
+lifetime = 36.0
+preprocess = 36.0
+emission_shape = 3
+emission_rect_extents = Vector2(1, 90)
+direction = Vector2(-1, 0)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 10.0
+color = Color(0.99116415, 0.99116427, 0.99116415, 1)
+
+[node name="Front" type="CPUParticles2D" parent="BackgroundParticles"]
+position = Vector2(320, 90)
+amount = 100
+lifetime = 36.0
+preprocess = 36.0
+speed_scale = 1.5
+emission_shape = 3
+emission_rect_extents = Vector2(1, 90)
+direction = Vector2(-1, 0)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 10.0
+scale_amount_min = 1.5
+scale_amount_max = 1.5
+color = Color(0.99116415, 0.99116427, 0.99116415, 1)
+
+[node name="Asteroids" type="Node" parent="."]
+script = ExtResource("4_a04qp")
+asteroid_scene = ExtResource("3_8xnxh")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+process_mode = 3
+
+[node name="PausePanel" type="Panel" parent="CanvasLayer"]
+process_mode = 2
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/PausePanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -56.0
+offset_top = 31.0
+offset_right = 56.0
+offset_bottom = 54.0
+grow_horizontal = 2
+text = "GAME PAUSED"
+
+[node name="AsteroidsLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -50.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 16.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 8
+text = "Asteroids: 1"
+horizontal_alignment = 2
+
+[node name="GameInfo" type="VBoxContainer" parent="CanvasLayer"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 35.0
+offset_bottom = 28.0
+theme_override_constants/separation = 0
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/GameInfo"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "Score: 0"
+
+[node name="LevelLabel" type="Label" parent="CanvasLayer/GameInfo"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "Level: 1"
+
+[node name="Buttons" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = -23.0
+offset_right = 69.0
+offset_bottom = -4.0
+grow_vertical = 0
+
+[node name="MusicButton" type="TextureButton" parent="CanvasLayer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_gjr3k")
+texture_pressed = SubResource("AtlasTexture_fgh25")
+texture_hover = SubResource("AtlasTexture_fgh25")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="SoundsButton" type="TextureButton" parent="CanvasLayer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_gcgb4")
+texture_pressed = SubResource("AtlasTexture_4cdhi")
+texture_hover = SubResource("AtlasTexture_4cdhi")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="PauseButton" type="TextureButton" parent="CanvasLayer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+texture_normal = SubResource("AtlasTexture_vhpdd")
+texture_pressed = SubResource("AtlasTexture_bpu47")
+texture_hover = SubResource("AtlasTexture_bpu47")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="PlayButton" type="TextureButton" parent="CanvasLayer/Buttons"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+texture_normal = SubResource("AtlasTexture_8bifg")
+texture_pressed = SubResource("AtlasTexture_r8boq")
+texture_hover = SubResource("AtlasTexture_r8boq")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_cjuek")
+volume_db = 5.0
+autoplay = true
+bus = &"Music"
+
+[connection signal="body_exited" from="GameArea" to="GameArea" method="_on_body_exited"]
+[connection signal="child_entered_tree" from="Asteroids" to="Asteroids" method="_on_child_entered_tree"]
+[connection signal="child_exiting_tree" from="Asteroids" to="Asteroids" method="_on_child_exiting_tree"]

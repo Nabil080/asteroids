@@ -1,0 +1,96 @@
+[gd_scene load_steps=13 format=3 uid="uid://s0h4tlhdhsi7"]
+
+[ext_resource type="Script" uid="uid://dbhjr62a2mipa" path="res://entities/asteroid/asteroid.gd" id="1_4qh0a"]
+[ext_resource type="PackedScene" uid="uid://c0l450h8csj3t" path="res://utils/random_sprite/random_sprite.tscn" id="2_4qh0a"]
+[ext_resource type="PackedScene" uid="uid://leum7tlnh6id" path="res://components/damage/hitbox_component.tscn" id="3_ecv56"]
+[ext_resource type="PackedScene" uid="uid://bogelixwyclp" path="res://components/health/hurtbox_component.tscn" id="4_useci"]
+[ext_resource type="PackedScene" uid="uid://sn8h8kcss23a" path="res://components/health/health_component.tscn" id="5_go57s"]
+[ext_resource type="PackedScene" uid="uid://b3js6ibml68b5" path="res://components/health/health_bar_component.tscn" id="6_6133j"]
+[ext_resource type="AudioStream" uid="uid://w5sx3sjatdix" path="res://assets/sounds/asteroid_explosion.wav" id="7_78yw1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_20vrb"]
+radius = 3.5
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ecv56"]
+radius = 16.03122
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_go57s"]
+radius = 18.0
+
+[sub_resource type="Curve" id="Curve_6133j"]
+_data = [Vector2(0.056179777, 0.022471905), 0.0, 0.0, 0, 0, Vector2(0.5280899, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_xhm4x"]
+random_pitch = 1.3
+streams_count = 1
+stream_0/stream = ExtResource("7_78yw1")
+
+[node name="Asteroid" type="RigidBody2D"]
+collision_layer = 4
+collision_mask = 0
+linear_damp_mode = 1
+script = ExtResource("1_4qh0a")
+
+[node name="RandomSprite" parent="." instance=ExtResource("2_4qh0a")]
+scale = Vector2(4, 4)
+region_rect = Rect2(16, 0, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+scale = Vector2(4, 4)
+shape = SubResource("CircleShape2D_20vrb")
+
+[node name="HitboxComponent" parent="." instance=ExtResource("3_ecv56")]
+visible = false
+collision_mask = 2
+damage = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
+shape = SubResource("CircleShape2D_ecv56")
+
+[node name="HurtboxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("4_useci")]
+visible = false
+collision_layer = 4
+health_component = NodePath("../HealthComponent")
+damage_cooldown = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent"]
+shape = SubResource("CircleShape2D_go57s")
+
+[node name="HealthComponent" parent="." instance=ExtResource("5_go57s")]
+max_health = 10
+
+[node name="HealthBarComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("6_6133j")]
+health_component = NodePath("../HealthComponent")
+
+[node name="HealthBar" parent="HealthBarComponent" index="0"]
+offset_top = 21.0
+offset_bottom = 25.0
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+z_index = 10
+emitting = false
+amount = 10
+one_shot = true
+explosiveness = 1.0
+direction = Vector2(0, 0)
+spread = 178.12
+gravity = Vector2(0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 30.0
+angular_velocity_min = -60.0
+angular_velocity_max = 60.0
+damping_max = 10.0
+scale_amount_min = 3.0
+scale_amount_max = 5.0
+scale_amount_curve = SubResource("Curve_6133j")
+color = Color(0.91764706, 0.83137256, 0.6666667, 1)
+
+[node name="DeathSound" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_xhm4x")
+bus = &"SoundEffects"
+
+[connection signal="health_depleted" from="HealthComponent" to="." method="_on_health_component_health_depleted"]
+
+[editable path="HealthBarComponent"]

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://c0l450h8csj3t"]
+
+[ext_resource type="Texture2D" uid="uid://dpqlp08hu8v57" path="res://assets/asteroids-Sheet.png" id="1_my41l"]
+[ext_resource type="Script" uid="uid://dx7hpeugynq7c" path="res://utils/random_sprite/random_sprite.gd" id="2_4crci"]
+
+[node name="RandomSprite" type="Sprite2D"]
+texture = ExtResource("1_my41l")
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 16)
+script = ExtResource("2_4crci")
+count = 3

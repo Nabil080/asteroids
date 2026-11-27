@@ -1,0 +1,111 @@
+[gd_scene load_steps=12 format=3 uid="uid://1gex404ws8ru"]
+
+[ext_resource type="Script" uid="uid://pv4yb4h1owbk" path="res://entities/bullet/bullet.gd" id="1_1bfx4"]
+[ext_resource type="Texture2D" uid="uid://vypa2qjljq2p" path="res://assets/ship-Sheet.png" id="1_vq7sn"]
+[ext_resource type="PackedScene" uid="uid://leum7tlnh6id" path="res://components/damage/hitbox_component.tscn" id="2_5nr4d"]
+[ext_resource type="AudioStream" uid="uid://dvel8kaxjsggt" path="res://assets/sounds/laserShoot.wav" id="4_pesig"]
+[ext_resource type="AudioStream" uid="uid://c13olo2gok5ls" path="res://assets/sounds/bullet_explosion.wav" id="5_r7cvy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vq7sn"]
+radius = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1bfx4"]
+radius = 2.0
+
+[sub_resource type="Curve" id="Curve_1bfx4"]
+_data = [Vector2(0.056179777, 0.022471905), 0.0, 0.0, 0, 0, Vector2(0.5280899, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_pesig"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5280899, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_r7cvy"]
+random_pitch = 1.3
+streams_count = 1
+stream_0/stream = ExtResource("4_pesig")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_867mf"]
+random_pitch = 1.6
+streams_count = 1
+stream_0/stream = ExtResource("5_r7cvy")
+
+[node name="Bullet" type="RigidBody2D"]
+z_index = 10
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_1bfx4")
+lifetime = 1.0
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+position = Vector2(0, 1)
+amount = 10
+lifetime = 0.1
+emission_shape = 1
+emission_sphere_radius = 0.5
+gravity = Vector2(0, 0)
+color = Color(0.7529412, 0.79607844, 0.8627451, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("1_vq7sn")
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_vq7sn")
+
+[node name="HitboxComponent" parent="." instance=ExtResource("2_5nr4d")]
+visible = false
+collision_mask = 28
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
+visible = false
+shape = SubResource("CircleShape2D_1bfx4")
+
+[node name="HitParticles" type="CPUParticles2D" parent="."]
+z_index = 10
+emitting = false
+amount = 35
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+direction = Vector2(0, 0)
+spread = 178.12
+gravity = Vector2(0, 0)
+initial_velocity_min = 5.0
+initial_velocity_max = 10.0
+angular_velocity_min = -60.0
+angular_velocity_max = 60.0
+scale_amount_min = 0.2
+scale_amount_max = 0.5
+scale_amount_curve = SubResource("Curve_1bfx4")
+
+[node name="FireParticles" type="CPUParticles2D" parent="."]
+z_index = 5
+position = Vector2(0, 1)
+emitting = false
+amount = 35
+one_shot = true
+explosiveness = 1.0
+lifetime_randomness = 1.0
+direction = Vector2(0, 1)
+spread = 95.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 5.0
+initial_velocity_max = 10.0
+scale_amount_min = 0.3
+scale_amount_max = 0.5
+scale_amount_curve = SubResource("Curve_pesig")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_r7cvy")
+autoplay = true
+bus = &"SoundEffects"
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_867mf")
+bus = &"SoundEffects"
+
+[connection signal="dealt_damage" from="HitboxComponent" to="." method="_on_hitbox_component_dealt_damage"]

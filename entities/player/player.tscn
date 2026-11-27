@@ -1,0 +1,358 @@
+[gd_scene load_steps=23 format=3 uid="uid://d0t43tuuufwhi"]
+
+[ext_resource type="Script" uid="uid://cq1dbp6t4wl1e" path="res://entities/player/player.gd" id="1_abrql"]
+[ext_resource type="Texture2D" uid="uid://vypa2qjljq2p" path="res://assets/ship-Sheet.png" id="2_abrql"]
+[ext_resource type="Script" uid="uid://2qvnijbat8al" path="res://entities/player/thrust_animation.gd" id="3_sglur"]
+[ext_resource type="PackedScene" uid="uid://bogelixwyclp" path="res://components/health/hurtbox_component.tscn" id="4_8fjmc"]
+[ext_resource type="PackedScene" uid="uid://sn8h8kcss23a" path="res://components/health/health_component.tscn" id="4_fkugw"]
+[ext_resource type="PackedScene" uid="uid://b3js6ibml68b5" path="res://components/health/health_bar_component.tscn" id="6_8fjmc"]
+[ext_resource type="AudioStream" uid="uid://bhokjhqe1gmf1" path="res://assets/sounds/player_hurt.wav" id="7_qiwj3"]
+[ext_resource type="AudioStream" uid="uid://d0blmsp5552p2" path="res://assets/sounds/thrust.mp3" id="8_26q78"]
+[ext_resource type="AudioStream" uid="uid://dvtfbacj2k7pq" path="res://assets/sounds/player_death.wav" id="9_bectd"]
+
+[sub_resource type="Gradient" id="Gradient_abrql"]
+offsets = PackedFloat32Array(0, 0.23417722, 0.46835443, 0.76582277, 1)
+colors = PackedColorArray(0.6313726, 0.003921569, 0, 1, 0.85490197, 0.12156863, 0.019607844, 1, 0.9529412, 0.23529412, 0.015686275, 1, 0.99607843, 0.39607844, 0.050980393, 1, 1, 0.75686276, 0.12156863, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sglur"]
+atlas = ExtResource("2_abrql")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bls4j"]
+atlas = ExtResource("2_abrql")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fkugw"]
+atlas = ExtResource("2_abrql")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8fjmc"]
+atlas = ExtResource("2_abrql")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qiwj3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sglur")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bls4j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fkugw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8fjmc")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bls4j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fkugw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8fjmc")
+}],
+"loop": false,
+"name": &"thrusting",
+"speed": 10.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_symyc"]
+radius = 4.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fkugw"]
+radius = 5.0
+
+[sub_resource type="Animation" id="Animation_qiwj3"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DeathParticles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("HealthBarComponent:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("DeathSound:playing")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("HurtboxComponent:enabled")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:enabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_8fjmc"]
+resource_name = "death"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DeathParticles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("HealthBarComponent:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("DeathSound:playing")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:enabled")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/5/type = "method"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("ThrustSound")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"stop"
+}]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("HurtboxComponent:enabled")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/7/type = "method"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath(".")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"values": []
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_26q78"]
+_data = {
+&"RESET": SubResource("Animation_qiwj3"),
+&"death": SubResource("Animation_8fjmc")
+}
+
+[sub_resource type="Curve" id="Curve_8fjmc"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.758427, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_qiwj3"]
+random_pitch = 1.6
+streams_count = 1
+stream_0/stream = ExtResource("7_qiwj3")
+
+[node name="Player" type="CharacterBody2D"]
+z_index = 5
+scale = Vector2(1, 1.0416023)
+collision_layer = 2
+collision_mask = 0
+motion_mode = 1
+script = ExtResource("1_abrql")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Visuals"]
+position = Vector2(0, 4)
+emitting = false
+amount = 500
+lifetime = 0.04
+emission_shape = 1
+emission_sphere_radius = 3.0
+direction = Vector2(0, 1)
+gravity = Vector2(0, 0)
+initial_velocity_min = 123.71
+initial_velocity_max = 123.71
+color_ramp = SubResource("Gradient_abrql")
+hue_variation_min = -1.0
+hue_variation_max = 1.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals"]
+sprite_frames = SubResource("SpriteFrames_qiwj3")
+script = ExtResource("3_sglur")
+
+[node name="HealthBarComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("6_8fjmc")]
+health_component = NodePath("../HealthComponent")
+
+[node name="HealthBar" parent="HealthBarComponent" index="0"]
+offset_top = 9.0
+offset_bottom = 13.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_symyc")
+
+[node name="HurtboxComponent" parent="." node_paths=PackedStringArray("health_component", "visuals") instance=ExtResource("4_8fjmc")]
+collision_layer = 2
+health_component = NodePath("../HealthComponent")
+damage_cooldown = 1.0
+visuals = NodePath("../Visuals")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent"]
+shape = SubResource("CircleShape2D_fkugw")
+
+[node name="HealthComponent" parent="." instance=ExtResource("4_fkugw")]
+max_health = 10
+
+[node name="BulletMarker" type="Marker2D" parent="."]
+position = Vector2(0, -9)
+
+[node name="CooldownTimer" type="Timer" parent="BulletMarker"]
+wait_time = 0.2
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_26q78")
+}
+
+[node name="DeathParticles" type="CPUParticles2D" parent="."]
+z_index = 10
+emitting = false
+amount = 35
+one_shot = true
+explosiveness = 1.0
+direction = Vector2(0, 0)
+spread = 178.12
+gravity = Vector2(0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 15.0
+angular_velocity_min = -60.0
+angular_velocity_max = 60.0
+scale_amount_max = 1.5
+scale_amount_curve = SubResource("Curve_8fjmc")
+
+[node name="HurtSound" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_qiwj3")
+bus = &"SoundEffects"
+
+[node name="ThrustSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_26q78")
+volume_db = -10.0
+bus = &"SoundEffects"
+
+[node name="DeathSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_bectd")
+bus = &"SoundEffects"
+
+[connection signal="damaged" from="HealthComponent" to="." method="_on_health_component_damaged"]
+[connection signal="health_depleted" from="HealthComponent" to="." method="_on_health_component_health_depleted"]
+
+[editable path="HealthBarComponent"]

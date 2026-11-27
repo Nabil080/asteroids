@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bogelixwyclp"]
+
+[ext_resource type="Script" uid="uid://blc23rtglb067" path="res://components/health/hurtbox_component.gd" id="1_prfln"]
+
+[node name="HurtboxComponent" type="Area2D"]
+modulate = Color(0, 1, 0.1833334, 1)
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_prfln")
